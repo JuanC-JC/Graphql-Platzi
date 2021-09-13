@@ -1,0 +1,124 @@
+"valida los tipos de  nivel"
+enum Level {
+  principiante
+  intermedio
+  avanzado
+}
+
+#interface for object data course, fields with ! are required
+type Course {
+  _id: ID!
+  title: String!
+  teacher: String
+  description: String!
+  topic: String
+  people: [Student]
+  level: Level
+}
+
+# Interface for every type similary to a person
+interface Person {
+  _id: ID!
+  name: String!
+  email: String!
+}
+
+type Student implements Person {
+  _id: ID!
+  name: String!
+  email: String!
+  avatar: String
+}
+
+type Monitor implements Person {
+  _id: ID!
+  name: String!
+  email: String!
+  phone: String
+  avatar: String
+}
+
+union GlobalSearch = Course | Student | Monitor
+
+# query to ask for data is type query
+# to build this querys we need to especify what type of data we gonnna receive, for example courses
+# is a array of object course type
+type Query {
+  "Return all Courses"
+  courses: [Course]
+
+  "Return one Course"
+  getCourse(_id: ID!): Course
+
+  #Before inmplementation of interface person
+  # "Return all students"
+  # students: [Student]
+
+  # "Return one Course"
+  # getStudent(_id: ID!): Student
+
+  "Return all students"
+  people: [Person]
+
+  "Return one Course"
+  getPerson(_id: ID!): Person
+
+  "find by keyword"
+  searchItems(keyword: String!): [GlobalSearch]
+}
+
+# Interface to create a new course
+input CourseInput {
+  title: String!
+  teacher: String
+  description: String!
+  topic: String
+  level: Level
+}
+
+input CourseEditInput {
+  title: String
+  teacher: String
+  description: String
+  topic: String
+  level: Level
+}
+
+# Interface to create a new course
+input PersonInput {
+  name: String!
+  email: String!
+  phone: String
+  avatar: String
+}
+
+input PersonEditInput {
+  name: String
+  email: String
+  phone: String
+  avatar: String
+}
+
+# query to insert data is type Mutation
+type Mutation {
+  "Create a new course"
+  createCourse(input: CourseInput!): Course
+
+  "Edit a course"
+  editCourse(_id: ID!, input: CourseEditInput!): Course
+
+  "Delete a course"
+  deleteCourse(_id: ID!): Boolean
+
+  "Add a people to a course"
+  addPeople(courseID: ID!, personID: ID!): Course
+
+  "Create a Person"
+  createPerson(input: PersonInput!): Person
+
+  "Edit a Person"
+  editPerson(_id: ID!, input: PersonEditInput!): Person
+
+  "Delete a Person"
+  deletePerson(_id: ID!): Boolean
+}
